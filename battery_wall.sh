@@ -12,7 +12,7 @@ case "$OSTYPE" in
 esac
 
 case "$OSTYPE" in
-	darwin*) BATTERY="$(pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f1 -d';')" ;;
+	darwin*) BATTERY="$(pmset -g batt | egrep "([0-9]+\%).*" -o --colour=auto | cut -f1 -d';'| tr -d \%,)" ;;
 	linux*) BATTERY="$(acpi | awk -F ' ' 'END {print $4}' | tr -d \%,)" ;;
 	*) BATTERY_PERCENT="?" ;;
 esac
@@ -24,8 +24,10 @@ case "$OSTYPE" in
 esac
 
 ## For XFCE
-SCREEN="$(xrandr --listactivemonitors | awk -F ' ' 'END {print $1}' | tr -d \:)"
-MONITOR="$(xrandr --listactivemonitors | awk -F ' ' 'END {print $2}' | tr -d \*+)"
+if [[ "$OSTYPE" == "linux"* ]]; then
+    SCREEN="$(xrandr --listactivemonitors | awk -F ' ' 'END {print $1}' | tr -d \:)"
+    MONITOR="$(xrandr --listactivemonitors | awk -F ' ' 'END {print $2}' | tr -d \*+)"
+fi
 
 case "$OSTYPE" in 
 	darwin*) SETTER="wallpaper set" ;;
